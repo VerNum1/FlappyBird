@@ -7,6 +7,7 @@
 #include "C:\Users\vadim\CLionProjects\FlappyBird\Entity\Entity.h"
 #include "C:\Users\vadim\CLionProjects\FlappyBird\classBird\Bird.h"
 #include "C:\Users\vadim\CLionProjects\FlappyBird\MainWindow\MainWindow.h"
+#include "../Score/Score.h"
 
 using namespace std;
 
@@ -18,7 +19,6 @@ private:
     float x;
     float y;
     bool scored;
-
 public:
     Pipe() {
         x = (float) (window->getSize().x + upperPipe->getSize().x);

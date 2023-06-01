@@ -5,16 +5,29 @@
 #include <vector>
 #include <iostream>
 #include "C:\Users\vadim\CLionProjects\FlappyBird\Entity\Entity.h"
-#include "C:\Users\vadim\CLionProjects\FlappyBird\MainWindow\MainWindow.h"
+#include "../MainWindow/MainWindow.h"
 
 using namespace std;
 
+bool gameRunning, gameOvered;
+float delta;
+float speed;
+
+sf::Texture *backgroundTexture;
+sf::Texture *groundTexture;
+sf::Font *font;
+
+float groundOffset;
+
+sf::RenderWindow *window;
+
 class Bird : public MainWindowEntity {
+public:
+    float vel;
 private:
     static Bird *bird;
     sf::Texture *texture;
     float y;
-    float vel;
     float currentFrames{};
     sf::Clock *animationClock;
     vector<sf::Texture *> frames;
@@ -63,9 +76,10 @@ public:
         };
     }
 
-    void flap() {
+    void flap(float b) {
         if (not gameRunning or gameOvered) return;
-        vel = -420;
+        vel = b;
+        cout << b;
     }
 
     void draw() override {

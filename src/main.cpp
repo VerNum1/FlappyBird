@@ -1,8 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <vector>
 #include <iostream>
-#include "C:\Users\vadim\CLionProjects\FlappyBird\classBird\Bird.h"
-#include "C:\Users\vadim\CLionProjects\FlappyBird\Entity\Entity.h"
 #include "C:\Users\vadim\CLionProjects\FlappyBird\MainWindow\MainWindow.h"
 
 using namespace std;

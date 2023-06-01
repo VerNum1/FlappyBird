@@ -4,23 +4,67 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <ctime>
 #include "C:\Users\vadim\CLionProjects\FlappyBird\Entity\Entity.h"
-#include "C:\Users\vadim\CLionProjects\FlappyBird\classPipes\Pipes.h"
+#include "../classPipes/Pipes.h"
 #include "../classBird/Bird.h"
+#include "../Boost/Boost.h"
 
 using namespace std;
 
-int score;
-bool gameRunning, gameOvered;
-float delta;
+class DifficultyLevel{
+public:
+    string path;
+    float speed{};
+};
 
-sf::Texture *backgroundTexture;
-sf::Texture *groundTexture;
-sf::Font *font;
+class Day : DifficultyLevel{
+public:
+    Day() {
+        path = "C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\background\\day.png";
+        speed = -420;
+    }
 
-float groundOffset;
+    string getPath(){
+        return path;
+    }
 
-sf::RenderWindow *window;
+    float getSpeed(){
+        return speed;
+    }
+};
+
+class Impossible : DifficultyLevel {
+public:
+    Impossible() {
+        path = "C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\background\\impossible.png";
+        speed = -450;
+    }
+
+    string getPath(){
+        return path;
+    }
+
+    float getSpeed(){
+        return speed;
+    }
+};
+
+class Night : DifficultyLevel {
+public:
+    Night() {
+        path = "C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\background\\night.png";
+        speed = -350;
+    }
+
+    string getPath(){
+        return path;
+    }
+
+    float getSpeed(){
+        return speed;
+    }
+};
 
 class MainWindow {
 public :
@@ -37,8 +81,27 @@ public :
         bird = new Bird();
 
         backgroundTexture = new sf::Texture();
-        backgroundTexture->loadFromFile(
-                "C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\background\\impossible.png");
+        time_t now = time(0);
+        tm *systemTime = localtime(&now);
+        int hour = 1 + systemTime->tm_hour;
+
+        Day day = Day();
+        Impossible impossible = Impossible();
+        Night night = Night();
+
+        if(hour >= 8 && hour <= 18){
+            backgroundTexture->loadFromFile(day.getPath());
+            speed = day.getSpeed();
+        }else if(hour > 18 && hour <= 23){
+            backgroundTexture->loadFromFile(impossible.getPath());
+            speed = impossible.getSpeed();
+        }else if(hour >= 0 && hour < 8){
+            backgroundTexture->loadFromFile(night.getPath());
+            speed = night.getSpeed();
+        }else {
+            backgroundTexture->loadFromFile("C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\background\\day.png");
+            speed = day.getSpeed();
+        }
 
         groundTexture = new sf::Texture();
         groundTexture->loadFromFile("C:\\Users\\vadim\\CLionProjects\\FlappyBird\\resources\\textures\\ground.png");
@@ -65,6 +128,7 @@ public :
     }
 
     static void update() {
+        srand((unsigned int) time(nullptr));
         bird->update();
 
         for (const auto &pipe: pipes) {
@@ -88,13 +152,15 @@ public :
         if (event.type == sf::Event::Closed) {
             window->close();
         }
-        if (event.type == sf::Event::MouseButtonPressed) {
+
+        if (event.type == sf::Event::MouseButtonPressed){
             if (not gameRunning) {
                 gameRunning = true;
                 pipesGeneratingClock->restart();
                 pipes.push_back(new Pipe());
             }
-            bird->flap();
+
+            bird->flap(Boost::update());
         }
     }
 
@@ -128,9 +194,13 @@ public :
 
         bird->draw();
 
-        sf::Text scoreText("Score: " + to_string(score), *font);
-        scoreText.setPosition(window->getSize().x / 2 - scoreText.getLocalBounds().width / 2, 5);
-        window->draw(scoreText);
+        Score::draw();
+
+        boostTime = new sf::Clock();
+        if (boostTime->getElapsedTime().asSeconds() < 2)
+            Boost::draw();
+        else
+            boostTime->restart();
     }
 
 };
