@@ -1,0 +1,4 @@
+#ifndef FLAPPYBIRD_CAR_H
+#define FLAPPYBIRD_CAR_H
+
+#endif //FLAPPYBIRD_CAR_H
